@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateFilesystemClosureTable extends Migration
+
+{
+    /**
+     * 运行迁移
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('filesystem_closures', function (Blueprint $table) {
+            $table->unsignedInteger('ancestor');
+            $table->unsignedInteger('descendant');
+            $table->unsignedTinyInteger('distance');
+            $table->primary(['ancestor', 'descendant']);
+        });
+    }
+
+    /**
+     * 回滚迁移
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('filesystem_closures');
+    }
+}
