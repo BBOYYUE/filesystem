@@ -7,12 +7,17 @@ use BenSampo\Enum\Enum;
 class FilesystemTypeEnum extends Enum
 {
     /**
-     * 处理中
+     * 目录
      */
     const DIR = 0;
     /**
-     * 已成功
+     * 文件
      */
     const DATA = 1;
+
+    /**
+     * 资源
+     */
+    const ASSET = 1;
 
 }
