@@ -9,15 +9,10 @@ class FilesystemTypeEnum extends Enum
     /**
      * 目录
      */
-    const DIR = 0;
+    const DIR = 1;
     /**
      * 文件
      */
-    const DATA = 1;
-
-    /**
-     * 资源
-     */
-    const ASSET = 1;
+    const DATA = 2;
 
 }

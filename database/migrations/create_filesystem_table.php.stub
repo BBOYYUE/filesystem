@@ -17,13 +17,16 @@ class CreateFilesystemTable extends Migration
         Schema::create('filesystems', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->tinyInteger('type');
-            $table->tinyInteger('status');
-            $table->unsignedInteger('order');
-            $table->string('uuid');
-            $table->string('alias');
+            $table->tinyInteger('type')->comment("类型 Dir 和 data 两种");
+            $table->tinyInteger('status')->comment("当前状态");
+            $table->unsignedInteger('order')->comment("排序字段");
+            $table->string('uuid')->comment("一个基本上不可能重复的唯一标识符");
+            $table->string('alias')->comment("一个随机的文件名");
+            $table->string('extension')->default('')->comment("文件类型");
+            $table->string('model_type')->default('')->comment("模型类型");
+            $table->bigInteger('model_id')->default(0)->comment("模型id, 文件资源可以和资源相互绑定");
             $table->bigInteger('user_id')->default(0)->comment('文件所有者');
-            $table->bigInteger('group_id')->default(0)->comment('文件所有者');
+            $table->bigInteger('group_id')->default(0)->comment('文件所有用户组');
             $table->timestamps();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
         });
