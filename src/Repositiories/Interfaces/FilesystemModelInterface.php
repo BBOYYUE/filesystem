@@ -18,7 +18,7 @@ interface FilesystemModelInterface
 
     /**
      * 新增一个子目录
-     * @param $name
+     * @param $child
      * @return mixed
      */
     function addChildDir($name);
@@ -76,7 +76,7 @@ interface FilesystemModelInterface
      * @param $parent
      * @return mixed
      */
-    function moveTo($parent);
+    function moveToDir($parent);
 
     /**
      * 如果当前资源是 data, 那么返回路径

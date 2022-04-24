@@ -12,6 +12,7 @@ namespace Bboyyue\Filesystem\Repositiories\Interfaces;
  */
 interface FilesystemTraitInterface
 {
+
     /**
      * 将当前模型和某个文件资源相绑定
      * @param $dir

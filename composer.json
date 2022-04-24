@@ -14,5 +14,12 @@
         "spatie/eloquent-sortable": "^3.11",
         "spatie/laravel-activitylog": "^3.17",
         "bensampo/laravel-enum": "^4.2"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bboyyue\\Filesystem\\ServiceProvider"
+            ]
+        }
     }
 }

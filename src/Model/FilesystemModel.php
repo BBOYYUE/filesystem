@@ -2,6 +2,7 @@
 
 namespace Bboyyue\Filesystem\Model;
 
+use Bboyyue\Filesystem\Repositiories\Impl\FilesystemModelTrait;
 use Bboyyue\Filesystem\Repositiories\Impl\FilesystemTraitBak;
 use Bboyyue\Filesystem\Repositiories\Interfaces\FilesystemModelInterface;
 use BenSampo\Enum\Traits\CastsEnums;
@@ -16,9 +17,9 @@ use Jiaxincui\ClosureTable\Traits\ClosureTable;
 /**
  * @method static where(string $string, $uuid)
  */
-class FilesystemModel extends Model implements HasMedia
+class FilesystemModel extends Model implements HasMedia, FilesystemModelInterface
 {
-    use HasFactory, InteractsWithMedia, HasTags, ClosureTable, SortableTrait, CastsEnums;
+    use HasFactory, InteractsWithMedia, HasTags, ClosureTable, SortableTrait, CastsEnums, FilesystemModelTrait;
 
 
     protected $fillable = [

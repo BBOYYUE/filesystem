@@ -31,10 +31,10 @@ interface FilesystemFacadeInterface
     /**
      * 创建一个木有父目录的文件夹
      * @param $name
-     * @param $option
+     * @param array $option
      * @return mixed
      */
-    function makeRoot($name, $option);
+    function makeRoot($name, array $option = []);
 
     /**
      * 创建文件, 创建文件需要指定文件保存的位置, 和文件的路径

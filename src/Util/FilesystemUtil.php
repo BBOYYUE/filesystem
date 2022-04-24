@@ -4,6 +4,7 @@ namespace Bboyyue\Filesystem\Util;
 
 class FilesystemUtil
 {
+
     static public function getDirAllFiles($dirPath, array $fileList = []): array
     {
         if ($handle = opendir($dirPath)) {

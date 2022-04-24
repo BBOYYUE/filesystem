@@ -43,5 +43,5 @@ return [
          * failed
          */
         "failed" => "filesystem_failed"
-    ]
+    ],
 ];
