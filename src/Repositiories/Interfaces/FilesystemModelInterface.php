@@ -21,20 +21,33 @@ interface FilesystemModelInterface
      * @param $child
      * @return mixed
      */
-    function addChildDir($name);
+    function addChildDir($name, array $option = [], $tag = []);
 
     /**
      * 新增一个子文件
      * @param $filepath
+     * @param array $option
+     * @param array $tag
      * @return mixed
      */
-    function addData($filepath);
+    function addData($filepath, $option = [], $tag = []);
 
     /**
      * @param $request
+     * @param array $option
+     * @param array $tag
      * @return mixed
      */
-    function addDataByRequest($request);
+    function addDataByRequest($request, $option = [], $tag = []);
+
+
+    /**
+     * @param $text
+     * @param array $option
+     * @param array $tag
+     * @return mixed
+     */
+    function addDataByText($text, $option = [], $tag = []);
 
     /**
      * 删除某个子元素
@@ -89,4 +102,11 @@ interface FilesystemModelInterface
      * @return mixed
      */
     function localPath();
+
+
+    /**
+     * 如果当前资源是 data, 那么返回线上路径, 如果不存在, 则会下载
+     * @return mixed
+     */
+    function linePath();
 }

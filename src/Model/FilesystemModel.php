@@ -3,11 +3,11 @@
 namespace Bboyyue\Filesystem\Model;
 
 use Bboyyue\Filesystem\Repositiories\Impl\FilesystemModelTrait;
-use Bboyyue\Filesystem\Repositiories\Impl\FilesystemTraitBak;
 use Bboyyue\Filesystem\Repositiories\Interfaces\FilesystemModelInterface;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -17,7 +17,7 @@ use Jiaxincui\ClosureTable\Traits\ClosureTable;
 /**
  * @method static where(string $string, $uuid)
  */
-class FilesystemModel extends Model implements HasMedia, FilesystemModelInterface
+class FilesystemModel extends Model implements Sortable, HasMedia, FilesystemModelInterface
 {
     use HasFactory, InteractsWithMedia, HasTags, ClosureTable, SortableTrait, CastsEnums, FilesystemModelTrait;
 
@@ -33,7 +33,8 @@ class FilesystemModel extends Model implements HasMedia, FilesystemModelInterfac
         'model_type',
         'model_id',
         'user_id',
-        'group_id'
+        'group_id',
+        'use_type'
     ];
 
 
@@ -42,6 +43,20 @@ class FilesystemModel extends Model implements HasMedia, FilesystemModelInterfac
      * @var string
      */
     protected string $closureTable = 'filesystem_closures';
+
+    protected $ancestorColumn = 'ancestor';
+
+    protected $descendantColumn = 'descendant';
+
+    protected $distanceColumn = 'distance';
+
+    protected $parentColumn = 'parent_id';
+
+    /**
+     * 数据表名
+     * @var string
+     */
+    protected $table = 'filesystems';
 
     /**
      * 排序功能

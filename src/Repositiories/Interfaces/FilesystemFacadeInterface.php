@@ -17,16 +17,17 @@ interface FilesystemFacadeInterface
      * @param $dir
      * @return mixed
      */
-    function getDescendants($dir);
+    static function getDescendants($dir);
 
     /**
      * 创建文件目录, 创建目录必须指定父级目录
      * @param $dir
      * @param $name
-     * @param $option
+     * @param array $option
+     * @param array $tag
      * @return mixed
      */
-    function addDir($dir, $name, $option);
+    static function addDir($dir, $name, array $option = [], array $tag = []);
 
     /**
      * 创建一个木有父目录的文件夹
@@ -34,7 +35,7 @@ interface FilesystemFacadeInterface
      * @param array $option
      * @return mixed
      */
-    function makeRoot($name, array $option = []);
+    static function makeRoot($name, array $option = []);
 
     /**
      * 创建文件, 创建文件需要指定文件保存的位置, 和文件的路径
@@ -42,17 +43,19 @@ interface FilesystemFacadeInterface
      * 并且在 redis 中创建一条指向到临时文件位置的记录
      * @param $dir
      * @param $filePath
+     * @param array $tag
      * @return mixed
      */
-    function addData($dir, $filePath);
+    static function addData($dir, $filePath, $option =[], array $tag = []);
 
+    static function addDataByText($dir, $text, $option = [], $tag = []);
     /**
      * 从请求保存文件
      * @param $dir
      * @param $request
      * @return mixed
      */
-    function addDataByRequest($dir, $request);
+    static function addDataByRequest($dir, $request, $option =[], $tag = []);
 
     /**
      * 将目录或者文件移至新的目录下
@@ -60,14 +63,14 @@ interface FilesystemFacadeInterface
      * @param $newDir
      * @return mixed
      */
-    function move($oldDir, $newDir);
+    static function move($oldDir, $newDir);
 
     /**
      * 删除文件资源
      * @param $file
      * @return mixed
      */
-    function remove($file);
+    static function remove($file);
 
     /**
      * 给某个文件资源修改文件
@@ -75,7 +78,7 @@ interface FilesystemFacadeInterface
      * @param $name
      * @return mixed
      */
-    function rename($file, $name);
+    static function rename($file, $name);
 
     /**
      * 给某个文件资源打标签
@@ -83,33 +86,38 @@ interface FilesystemFacadeInterface
      * @param $tag
      * @return mixed
      */
-    function setTag($file, $tag);
+    static function setTag($file, $tag);
 
     /**
      * 获取某个文件的 tag
      * @param $file
      * @return mixed
      */
-    function getTag($file);
+    static function getTag($file);
 
     /**
      * 获取某个文件资源类型的路径
      * @param $file
      * @return mixed
      */
-    function path($file);
+    static function path($file);
 
     /**
      * 获取某个文件资源的下载url
      * @param $file
      * @return mixed
      */
-    function url($file);
+    static function url($file);
 
 
     /** 获取文件的本地地址
      * @param $file
      * @return mixed
      */
-    function localPath($file);
+    static function localPath($file);
+
+    /**
+     * 获取文件的线上地址
+     */
+    static function linePath($file);
 }

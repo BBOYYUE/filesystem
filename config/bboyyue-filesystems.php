@@ -1,13 +1,20 @@
 <?php
+
+use Illuminate\Support\Facades\Storage;
+
 return [
-    "temp_dir" =>  public_path('/bboyyue_filesystem_temp_dir'),
+    "temp_dir" => 'bboyyue_filesystem_temp_dir',
     "job"=> "filesystem_job",
     "redis" => [
         /**
          * 文件路径缓存
          */
-        "path_cache" => "filesystem_path_cache",
+        "path_local_cache" => "filesystem_path_local_cache",
 
+        /**
+         * 线上文件路径缓存
+         */
+        "path_line_cache" => "filesystem_path_line_cache",
         /**
          * 任务进度
          */
@@ -44,4 +51,7 @@ return [
          */
         "failed" => "filesystem_failed"
     ],
+    "tag" => [
+        ""
+    ]
 ];

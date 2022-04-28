@@ -6,9 +6,12 @@ namespace Bboyyue\Filesystem\Repositiories\Impl;
 use Bboyyue\Filesystem\Enum\FilesystemStatusEnum;
 use Bboyyue\Filesystem\Enum\FilesystemTypeEnum;
 use Bboyyue\Filesystem\Model\FilesystemModel;
+use Bboyyue\Filesystem\Repositiories\Facade\Filesystem;
 use Bboyyue\Filesystem\Util\MediaUtil;
 use Bboyyue\Filesystem\Util\RedisUtil;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Created by : PhpStorm
@@ -19,64 +22,25 @@ use Illuminate\Support\Facades\Storage;
  */
 trait FilesystemModelTrait
 {
-    function addChildDir($name)
+
+    function addChildDir($name, array $option = [], $tag = [])
     {
-        $child = Filesystem::makeRoot($name);
-        $child->model_type = __CLASS__;
-        $child->model_id = $this->id;
-        $child->save();
-        $this->addChild($child);
-        return $child;
+        return Filesystem::addDir($this,$name, $option, $tag);
     }
 
-    function addData($filepath)
+    function addData($filepath, $option = [], $tag = [])
     {
-        $uuid = Str::uuid();
-        $fileName = basename($filepath);
-        $extension = is_dir($filepath) ? 'dir' : pathinfo($fileName, PATHINFO_EXTENSION);
-        $alias = is_dir($filepath) ? Str::before($uuid, '-') : Str::before($uuid, '-') . '.' . $extension;
-        $name = Str::before($fileName, "." . $extension);
-        $temp_path = Storage::disk('local')->path(config("bboyyue-filesystems.temp_dir") . '/' . $alias);
-        copy($filepath, $temp_path);
-        $filesystem = FilesystemModel::create([
-            'name' => $name,
-            'type' => FilesystemTypeEnum::DATA,
-            'status' => FilesystemStatusEnum::PENDING,
-            'uuid' => $uuid,
-            'alias' => $alias,
-            'extension' => $extension,
-            'model_type' => $this->model_type,
-            'model_id' => $this->model_id,
-        ]);
-        $this->addChild($filesystem);
-        MediaUtil::bindMedia($filesystem, $temp_path);
-        RedisUtil::createLocalPathCache($filesystem, $temp_path);
-        return $filesystem;
+        return Filesystem::addData($this, $filepath, $option, $tag);
     }
 
-    function addDataByRequest($request)
+    function addDataByRequest($request, $option = [], $tag = [])
     {
-        $uuid = Str::uuid();
-        $fileName = $request->file->name;
-        $extension = $request->file->extension();
-        $alias = Str::before($uuid, '-') . '.' . $extension;
-        $name = Str::before($fileName, "." . $extension);
-        $temp_path = Storage::disk('local')->path(config("bboyyue-filesystems.temp_dir") . '/' . $alias);
-        $request->photo->store($temp_path, 'local');
-        $filesystem = FilesystemModel::create([
-            'name' => $name,
-            'type' => FilesystemTypeEnum::DATA,
-            'status' => FilesystemStatusEnum::PENDING,
-            'uuid' => $uuid,
-            'alias' => $alias,
-            'extension' => $extension,
-            'model_type' => $this->model_type,
-            'model_id' => $this->model_id,
-        ]);
-        $this->addChild($filesystem);
-        MediaUtil::bindMedia($filesystem, $temp_path);
-        RedisUtil::createLocalPathCache($filesystem, $temp_path);
-        return $filesystem;
+        return Filesystem::addDataByRequest($this, $request, $option, $tag);
+    }
+
+    function addDataByText($text, $option = [], $tag = [])
+    {
+        return Filesystem::addDataByText($this, $text, $option, $tag);
     }
 
     function removeChild($child)
@@ -109,7 +73,7 @@ trait FilesystemModelTrait
 
     function moveToDir($parent)
     {
-
+        $this->moveTo($parent);
     }
 
     function path()
@@ -119,6 +83,11 @@ trait FilesystemModelTrait
 
     function localPath()
     {
+        return RedisUtil::getLocalPathCache($this);
+    }
 
+    function linePath()
+    {
+        return RedisUtil::getLinePathCache($this);
     }
 }

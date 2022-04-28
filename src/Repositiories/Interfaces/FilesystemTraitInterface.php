@@ -15,43 +15,70 @@ interface FilesystemTraitInterface
 
     /**
      * 将当前模型和某个文件资源相绑定
-     * @param $dir
      * @return mixed
      */
-    function bindFilesystemDir($dir);
+    function bindFilesystemDir($parent = null);
 
 
     /**
      * 往当前资源绑定的目录下新增文件
      * 如果当前资源绑定了多个目录, 那么可以指定目录
      * @param $filepath
+     * @param null $option
+     * @param null $tag
      * @param null $dir
      * @return mixed
      */
-    function addFilesystemData($filepath, $dir = null);
+    function addFilesystemData($filepath, $option = null, $tag = null , $dir = null );
+
+    /**
+     * 从文本保存文件
+     * @param $text
+     * @param null $option
+     * @param null $dir
+     * @param null $tag
+     * @return mixed
+     */
+    function addFilesystemDataByText($text, $option = null, $dir = null, $tag = null);
 
     /**
      * 从请求保存文件
      * @param $request
+     * @param null $option
+     * @param null $tag
      * @param null $dir
      * @return mixed
      */
-    function addFilesystemDataByRequest($request, $dir = null);
+    function addFilesystemDataByRequest($request, $option = null, $tag = null, $dir = null);
 
     /**
      * 往当前资源绑定的目录下新增文件夹
      * 如果当前资源绑定了多个目录, 那么可以指定目录
      * @param $child
      * @param null $dir
+     * @param null $option
+     * @param null $tag
      * @return mixed
      */
-    function addFilesystemDir($child, $dir = null);
+    function addFilesystemDir($child, $option = null, $dir = null, $tag = null);
 
     /**
      * 查看当前资源绑定的文件资源
      * @return mixed
      */
-    function listFilesystem();
+    function listFilesystem($type = 0, $extension = '', $option=[], $tag = [], $tagAllOrAny = '');
+
+    /**
+     * 查看当前资源绑定的文件实体
+     * @return mixed
+     */
+    function listFilesystemData();
+
+    /**
+     * 查看当前资源绑定的文件夹
+     * @return mixed
+     */
+    function listFilesystemDir();
 
     /**
      * 查看当前资源绑定的文件资源的本地路径
@@ -84,6 +111,21 @@ interface FilesystemTraitInterface
     function setTagFilesystem($file, $tag);
 
     /**
+     * 通过后缀获取资源
+     * @param $extension
+     * @return mixed
+     */
+    function getFilesystemByExtension($extension);
+
+
+    /**
+     * 通过标签获取资源
+     * @param $tag
+     * @return mixed
+     */
+    function getFilesystemByTag($tag);
+
+    /**
      * 获取某个文件的路径
      * @param $file
      * @return mixed
@@ -97,5 +139,12 @@ interface FilesystemTraitInterface
      * @return mixed
      */
     function getFilesystemLocalPath($file);
+
+    /**
+     * 获取某个文件的线上地址
+     * @param $file
+     * @return mixed
+     */
+    function getFilesystemLinePath($file);
 
 }

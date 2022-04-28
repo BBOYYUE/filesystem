@@ -8,6 +8,7 @@
         }
     },
     "require": {
+        "laravel/framework": "^8.54",
         "jiaxincui/closure-table": "^2.1",
         "spatie/laravel-medialibrary": "^9.12",
         "spatie/laravel-tags": "^3.1",
