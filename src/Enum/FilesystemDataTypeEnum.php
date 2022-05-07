@@ -33,4 +33,17 @@ class FilesystemDataTypeEnum extends Enum
      * 全景小地图
      */
     const PANORAMA_MAP = 5;
+
+
+    /**
+     * three 模型
+     */
+    const THREE_OBJ = 6;
+
+
+    /**
+     * three mtl 材质
+     */
+    const THREE_MATERIAL= 8;
+
 }

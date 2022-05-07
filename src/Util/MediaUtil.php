@@ -3,6 +3,7 @@
 namespace Bboyyue\Filesystem\Util;
 
 
+use Bboyyue\Filesystem\Exception\FilesystemNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -35,6 +36,8 @@ class MediaUtil
                 Storage::disk('s3')->delete($media_path);
                 SyncUtil::SyncToS3($temp_path, $media_path, 'alpha-api');
             }
+        }else{
+            throw new FilesystemNotFoundException($filePath."not found");
         }
         return $media;
     }
