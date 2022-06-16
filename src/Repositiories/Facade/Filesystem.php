@@ -90,9 +90,9 @@ class Filesystem implements FilesystemFacadeInterface
     {
         $uuid = Str::uuid();
         $fileName = basename($filePath);
-        if(is_dir($filePath)){
-            $extension = Str::afterLast($filePath, '.')??'dir';
-        }else{
+        if (is_dir($filePath)) {
+            $extension = Str::afterLast($filePath, '.') ?? 'dir';
+        } else {
             $extension = pathinfo($fileName, PATHINFO_EXTENSION);
         }
         $alias = Str::before($uuid, '-') . '.' . $extension;
@@ -156,7 +156,6 @@ class Filesystem implements FilesystemFacadeInterface
         if ($tag) {
             $filesystem->attachTag($tag);
         }
-        echo $temp_path , "what?";
         $dir->addChild($filesystem);
         MediaUtil::bindMedia($filesystem, $temp_path, $temp_path);
         RedisUtil::createLocalPathCache($filesystem, $temp_path);
@@ -167,12 +166,13 @@ class Filesystem implements FilesystemFacadeInterface
     static function addDataByRequest($dir, $request, $option = [], $tag = [])
     {
         $uuid = Str::uuid();
-        $fileName = $request->file->name;
+//        var_dump($request->file);
+        $fileName = $request->file->getClientOriginalName();
         $extension = $request->file->extension();
         $alias = Str::before($uuid, '-') . '.' . $extension;
         $name = Str::before($fileName, "." . $extension);
         $temp_path = Storage::disk('local')->path(config("bboyyue-filesystems.temp_dir") . '/' . $alias);
-        $request->file->store($temp_path, 'local');
+        $request->file->storeAs(config("bboyyue-filesystems.temp_dir") ,  $alias, 'local');
 
         $data = [
             'name' => $name,

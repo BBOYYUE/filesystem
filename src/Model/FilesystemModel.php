@@ -29,12 +29,14 @@ class FilesystemModel extends Model implements Sortable, HasMedia, FilesystemMod
         'order',
         'uuid',
         'alias',
+        'option',
         'extension',
         'model_type',
         'model_id',
         'user_id',
         'group_id',
-        'use_type'
+        'use_type',
+        'parent_id'
     ];
 
 
