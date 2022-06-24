@@ -46,4 +46,9 @@ class FilesystemDataTypeEnum extends Enum
      */
     const THREE_MATERIAL= 8;
 
+    const DESIGN_IMG = 9;
+
+    const DESIGN_VIDEO = 10;
+
+
 }
