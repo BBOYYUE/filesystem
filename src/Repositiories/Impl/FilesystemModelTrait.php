@@ -23,9 +23,15 @@ use Illuminate\Support\Str;
 trait FilesystemModelTrait
 {
 
+
     function addChildDir($name, array $option = [], $tag = [])
     {
         return Filesystem::addDir($this,$name, $option, $tag);
+    }
+
+    function addChildLink($name, $dir, $source)
+    {
+        return Filesystem::addChildLink($name, $dir, $source);
     }
 
     function addData($filepath, $option = [], $tag = [])
@@ -83,11 +89,35 @@ trait FilesystemModelTrait
 
     function localPath()
     {
+        $cache = RedisUtil::getLocalPathCache($this);
+        if(!$cache){
+            if($this->type == FilesystemTypeEnum::LINK){
+                RedisUtil::createLocalPathCache(FilesystemModel::where([
+                    ['uuid', '=', $this->uuid],
+                    ['type', '!=', FilesystemTypeEnum::LINK]
+                ])->first());
+            }else{
+                RedisUtil::createLocalPathCache($this);
+            }
+            $cache = RedisUtil::getLocalPathCache($this);
+        }
         return RedisUtil::getLocalPathCache($this);
     }
 
     function linePath()
     {
-        return RedisUtil::getLinePathCache($this);
+        $cache = RedisUtil::getLinePathCache($this);
+        if(!$cache){
+            if($this->type == FilesystemTypeEnum::LINK){
+                RedisUtil::createLinePathCache(FilesystemModel::where([
+                    ['uuid', '=', $this->uuid],
+                    ['type', '!=', FilesystemTypeEnum::LINK]
+                ])->first());
+            }else{
+                RedisUtil::createLinePathCache($this);
+            }
+            $cache = RedisUtil::getLinePathCache($this);
+        }
+        return $cache;
     }
 }

@@ -93,8 +93,10 @@ class FilesystemUtil
             case 'image/jpeg':
             case 'image/jpg':
                 $image = Image::make($filePath);
-                $option['width'] = $image->width();
-                $option['height'] = $image->height();
+                $option['option'] = json_encode([
+                    'width' => $image->width(),
+                    'height' => $image->height()
+                ]);
                 if ($image->width() / $image->height() == 2) {
                     $option['use_type'] = FilesystemDataTypeEnum::PANORAMA_IMG;
                 } else if ($image->width() == $image->height()) {
@@ -106,15 +108,22 @@ class FilesystemUtil
             case 'image/png':
             case 'image/webp':
                 $image = Image::make($filePath);
-                $option['width'] = $image->width();
-                $option['height'] = $image->height();
+                $option['option'] = json_encode([
+                    'width' => $image->width(),
+                    'height' => $image->height()
+                ]);
                 $option['use_type'] = FilesystemDataTypeEnum::DESIGN_IMG;
                 break;
             case 'video/mp4':
                 $option['use_type'] = FilesystemDataTypeEnum::DESIGN_VIDEO;
                 break;
+            case 'text/plain':
             case 'application/x-tgif':
-                $option['use_type'] = FilesystemDataTypeEnum::THREE_OBJ;
+                if(pathinfo($filePath, PATHINFO_EXTENSION) == 'obj'){
+                    $option['use_type'] = FilesystemDataTypeEnum::THREE_OBJ;
+                }else{
+                    $option['use_type'] = FilesystemDataTypeEnum::PANORAMA_XML;
+                }
                 break;
 
         }

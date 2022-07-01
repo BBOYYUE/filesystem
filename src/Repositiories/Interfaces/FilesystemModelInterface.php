@@ -24,6 +24,12 @@ interface FilesystemModelInterface
     function addChildDir($name, array $option = [], $tag = []);
 
     /**
+     * 将另外一个文件系统实例 软连接到当前对象下
+     */
+    function addChildLink($name, $dir, $source);
+
+
+    /**
      * 新增一个子文件
      * @param $filepath
      * @param array $option

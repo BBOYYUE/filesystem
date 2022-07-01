@@ -67,6 +67,31 @@ class Filesystem implements FilesystemFacadeInterface
         return $filesystem;
     }
 
+
+    static function addChildLink($name, $dir, $source)
+    {
+        $data = [
+            'name' => $name,
+            'type' => FilesystemTypeEnum::LINK,
+            'status' => FilesystemStatusEnum::PENDING,
+            'uuid' => $source->uuid,
+            'alias' => $source->alias,
+            'model_type' => $dir->model_type ?? '',
+            'model_id' => $dir->model_id ?? 0,
+            'use_type' => $source->use_type,
+            'option' => $source->option,
+            'extension' => $source->extension,
+            'user_id' => $dir->user_id,
+            'group_id' => $dir->group_id,
+            'filesize' => $source->filesize,
+            'source_name' => $source->source_name
+        ];
+        $filesystem = self::createFilesystem($data);
+        $dir->addChild($filesystem);
+        return $filesystem;
+
+    }
+
     static function makeRoot($name, array $option = [])
     {
         $uuid = Str::uuid();

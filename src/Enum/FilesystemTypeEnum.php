@@ -15,4 +15,9 @@ class FilesystemTypeEnum extends Enum
      */
     const DATA = 2;
 
+    /**
+     * 软连接
+     */
+    const LINK = 3;
+
 }

@@ -25,6 +25,7 @@ class CreateFilesystemTable extends Migration
             $table->unsignedInteger('order')->default(0)->comment("排序字段");
             $table->string('extension')->default('')->comment("文件类型");
             $table->string('model_type')->default('')->comment("模型类型");
+            $table->bigInteger('filesize')->default(0)->comment("文件大小");
             $table->bigInteger('parent_id')->default(0)->comment("父级id");
             $table->bigInteger('model_id')->default(0)->comment("模型id, 文件资源可以和资源相互绑定");
             $table->bigInteger('user_id')->default(0)->comment('文件所有者');

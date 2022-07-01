@@ -42,6 +42,7 @@ class RedisUtil
 
     static function createLinePathCache($model)
     {
+
         $path = $model->getFirstMedia('filesystem')->getPath();
         return Redis::hset(config('bboyyue-filesystems.redis.path_line_cache'), $model->id, $path);
     }

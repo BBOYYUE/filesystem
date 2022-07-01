@@ -27,7 +27,7 @@ trait FilesystemTrait
         $dir->model_type = __CLASS__;
         $dir->model_id = $this->id;
         $dir->save();
-        if($parent) $parent->addChild($dir);
+        if ($parent) $parent->addChild($dir);
         return $this;
     }
 
@@ -56,7 +56,7 @@ trait FilesystemTrait
     function addFilesystemDataByRequest($request, $option = null, $dir = null, $tag = null)
     {
         if ($dir) {
-            $dir->addDataByRequest($request,$option,  $tag);
+            $dir->addDataByRequest($request, $option, $tag);
             return $this;
         }
         $dir = FilesystemModel::where([
@@ -64,7 +64,7 @@ trait FilesystemTrait
             ['model_id', '=', $this->id]
         ])->first();
         if (!$dir) throw new Exception('资源状态异常');
-        return $this->addFilesystemDataByRequest($request, $option,  $dir, $tag);
+        return $this->addFilesystemDataByRequest($request, $option, $dir, $tag);
     }
 
     function addFilesystemDataByText($text, $option = null, $dir = null, $tag = null)
@@ -78,13 +78,13 @@ trait FilesystemTrait
             ['model_id', '=', $this->id]
         ])->first();
         if (!$dir) throw new Exception('资源状态异常');
-        return $this->addFilesystemDataByText($text, $option,  $dir, $tag);
+        return $this->addFilesystemDataByText($text, $option, $dir, $tag);
     }
 
-    function addFilesystemDir($name, $option = null, $dir = null,  $tag = null)
+    function addFilesystemDir($name, $option = null, $dir = null, $tag = null)
     {
         if ($dir) {
-            $dir->addChildDir($name, $option,  $tag);
+            $dir->addChildDir($name, $option, $tag);
             return $this;
         }
         $dir = FilesystemModel::where([
@@ -95,22 +95,46 @@ trait FilesystemTrait
         return $this->addFilesystemDir($name, $dir, $option, $tag);
     }
 
+
+    function addFilesystemLink($name, $dir = null, $source = null)
+    {
+        if ($dir) {
+            $dir->addChildLink($name, $dir, $source);
+            return $this;
+        }
+        $dir = FilesystemModel::where([
+            ['model_type', '=', __CLASS__],
+            ['model_id', '=', $this->id]
+        ])->first();
+        if (!$dir) throw new Exception('资源状态异常');
+        return $this->addFilesystemLink($name, $dir, $source);
+    }
+
+    /**
+     *
+     * @param int $type
+     * @param string $extension
+     * @param array $option
+     * @param array $tag
+     * @param string $tagAllOrAny
+     * @return mixed
+     */
     function listFilesystem($type = 0, $extension = '', $option = [], $tag = [], $tagAllOrAny = '')
     {
-        if($tag) {
+        if ($tag) {
             if ($tagAllOrAny === 'all') {
                 $query = FilesystemModel::withAllTags($tag);
-            } else{
+            } else {
                 $query = FilesystemModel::withAnyTags($tag);
             }
-        }else{
+        } else {
             $query = new FilesystemModel;
         }
         $where = [
             ['model_type', '=', __CLASS__],
             ['model_id', '=', $this->id]
         ];
-        if($option) $where = array_merge($where, $option);
+        if ($option) $where = array_merge($where, $option);
         if ($type) {
             $where[] = ['type', '=', $type];
         }
@@ -121,12 +145,17 @@ trait FilesystemTrait
         return $query->where($where)->get();
     }
 
+
     function listFilesystemData()
     {
         return FilesystemModel::where([
             ['model_type', '=', __CLASS__],
             ['model_id', '=', $this->id],
             ['type', '=', FilesystemTypeEnum::DATA]
+        ])->orWhere([
+            ['model_type', '=', __CLASS__],
+            ['model_id', '=', $this->id],
+            ['type', '=', FilesystemTypeEnum::LINK]
         ])->get();
     }
 
@@ -170,6 +199,16 @@ trait FilesystemTrait
 //        todo
     }
 
+    function clearFilesystem()
+    {
+        foreach (FilesystemModel::where([
+            ['model_type', '=', __CLASS__],
+            ['model_id', '=', $this->id]
+        ])->get() as $val) {
+            $this->removeFilesystem($val);
+        }
+    }
+
     function removeFilesystem($file)
     {
         $file->delete();
@@ -196,11 +235,35 @@ trait FilesystemTrait
 
     function getFilesystemLocalPath($file)
     {
+        $cache = RedisUtil::getLocalPathCache($file);
+        if (!$cache) {
+            if ($file->type == FilesystemTypeEnum::LINK) {
+                RedisUtil::createLocalPathCache(FilesystemModel::where([
+                    ['uuid', '=', $this->uuid],
+                    ['type', '!=', FilesystemTypeEnum::LINK]
+                ])->first());
+            } else {
+                RedisUtil::createLocalPathCache($file);
+            }
+            $cache = RedisUtil::getLocalPathCache($file);
+        }
         return RedisUtil::getLocalPathCache($file);
     }
 
     function getFilesystemLinePath($file)
     {
-        return RedisUtil::getLinePathCache($file);
+        $cache = RedisUtil::getLinePathCache($file);
+        if (!$cache) {
+            if ($file->type == FilesystemTypeEnum::LINK) {
+                RedisUtil::createLinePathCache(FilesystemModel::where([
+                    ['uuid', '=', $this->uuid],
+                    ['type', '!=', FilesystemTypeEnum::LINK]
+                ])->first());
+            } else {
+                RedisUtil::createLinePathCache($file);
+            }
+            $cache = RedisUtil::getLinePathCache($file);
+        }
+        return $cache;
     }
 }

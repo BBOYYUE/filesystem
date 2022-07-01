@@ -19,7 +19,9 @@ class MediaUtil
     static function bindMedia($model, $filePath, $temp_path)
     {
         if (is_file($filePath)) {
-            copy($filePath, $temp_path);
+            if($filePath != $temp_path){
+                copy($filePath, $temp_path);
+            }
             $media = $model->addMedia($temp_path)
                 ->preservingOriginal()
                 ->toMediaCollection('filesystem');
