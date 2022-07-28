@@ -4,6 +4,8 @@ namespace Bboyyue\Filesystem\Util;
 
 
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Illuminate\Support\Facades\Redis::hgetall(config('bboyyue-filesystems.redis.path_local_cache'));
@@ -29,8 +31,10 @@ class RedisUtil
     }
 
 
-    static function createLocalPathCache($model, $path)
+    static function createLocalPathCache($model)
     {
+        $alias = Str::before($model->uuid, '-') . '.' . $model->extension;
+        $path = Storage::disk('local')->path(config("bboyyue-filesystems.temp_dir") . '/' . $alias);
         $output= Redis::hset(config('bboyyue-filesystems.redis.path_local_cache'), $model->id, $path);
         return $output;
     }

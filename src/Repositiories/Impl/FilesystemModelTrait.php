@@ -34,6 +34,35 @@ trait FilesystemModelTrait
         return Filesystem::addChildLink($name, $dir, $source);
     }
 
+    function removeChildLink()
+    {
+        $files = FilesystemModel::where([
+            ['parent_id','=', $this->id],
+            ['type', '=', 3]
+        ])->get();
+        foreach ($files as $file){
+            Filesystem::remove($file);
+        }
+        return $this;
+    }
+
+    function removeChildWhere($where)
+    {
+        $query =  FilesystemModel::where('parent_id','=', $this->id);
+        foreach ($where as $val){
+            if($val[1] == 'in') {
+                $query->whereIn($val[0], $val[2]);
+            }else{
+                $query->where($val[0], $val[1], $val[2]);
+            }
+        }
+        $files = $query->get();
+        foreach ($files as $file){
+            Filesystem::remove($file);
+        }
+        return $this;
+    }
+
     function addData($filepath, $option = [], $tag = [])
     {
         return Filesystem::addData($this, $filepath, $option, $tag);
@@ -94,7 +123,7 @@ trait FilesystemModelTrait
             if($this->type == FilesystemTypeEnum::LINK){
                 RedisUtil::createLocalPathCache(FilesystemModel::where([
                     ['uuid', '=', $this->uuid],
-                    ['type', '!=', FilesystemTypeEnum::LINK]
+                    ['type', '!=', FilesystemTypeEnum::DATA]
                 ])->first());
             }else{
                 RedisUtil::createLocalPathCache($this);

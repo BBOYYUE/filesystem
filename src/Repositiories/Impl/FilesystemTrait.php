@@ -26,6 +26,7 @@ trait FilesystemTrait
         $dir = Filesystem::makeRoot($name);
         $dir->model_type = __CLASS__;
         $dir->model_id = $this->id;
+        $dir->type = FilesystemTypeEnum::DIR;
         $dir->save();
         if ($parent) $parent->addChild($dir);
         return $this;
@@ -47,7 +48,8 @@ trait FilesystemTrait
         }
         $dir = FilesystemModel::where([
             ['model_type', '=', __CLASS__],
-            ['model_id', '=', $this->id]
+            ['model_id', '=', $this->id],
+            ['type' ,'=', FilesystemTypeEnum::DIR]
         ])->first();
         if (!$dir) throw new Exception('资源状态异常');
         return $this->addFilesystemData($filepath, $option, $dir, $tag);
@@ -61,7 +63,8 @@ trait FilesystemTrait
         }
         $dir = FilesystemModel::where([
             ['model_type', '=', __CLASS__],
-            ['model_id', '=', $this->id]
+            ['model_id', '=', $this->id],
+            ['type' ,'=', FilesystemTypeEnum::DIR]
         ])->first();
         if (!$dir) throw new Exception('资源状态异常');
         return $this->addFilesystemDataByRequest($request, $option, $dir, $tag);
@@ -75,7 +78,8 @@ trait FilesystemTrait
         }
         $dir = FilesystemModel::where([
             ['model_type', '=', __CLASS__],
-            ['model_id', '=', $this->id]
+            ['model_id', '=', $this->id],
+            ['type' ,'=', FilesystemTypeEnum::DIR]
         ])->first();
         if (!$dir) throw new Exception('资源状态异常');
         return $this->addFilesystemDataByText($text, $option, $dir, $tag);
@@ -89,12 +93,46 @@ trait FilesystemTrait
         }
         $dir = FilesystemModel::where([
             ['model_type', '=', __CLASS__],
-            ['model_id', '=', $this->id]
+            ['model_id', '=', $this->id],
+            ['type' ,'=', FilesystemTypeEnum::DIR]
         ])->first();
         if (!$dir) throw new Exception('资源状态异常');
         return $this->addFilesystemDir($name, $dir, $option, $tag);
     }
 
+    /**
+     * 这个操作会删除当前资源绑定的目录下的所有软连接
+     * @param null $dir
+     * @return $this|FilesystemTrait
+     * @throws Exception
+     */
+    function removeFilesystemLink($dir = null)
+    {
+        if($dir){
+            $dir->removeChildLink();
+            return $this;
+        }
+        $dir = FilesystemModel::where([
+            ['model_type', '=', __CLASS__],
+            ['model_id', '=', $this->id],
+            ['type' ,'=', FilesystemTypeEnum::DIR]
+        ])->first();
+        if (!$dir) throw new Exception('资源状态异常');
+        return $this->removeFilesystemLink($dir);
+    }
+    function removeFilesWhere($where, $dir = null){
+        if($dir) {
+            $dir->removeChildWhere($where);
+            return $this;
+        }
+        $dir = FilesystemModel::where([
+            ['model_type', '=', __CLASS__],
+            ['model_id', '=', $this->id],
+            ['type' ,'=', FilesystemTypeEnum::DIR]
+        ])->first();
+        if (!$dir) throw new Exception('资源状态异常');
+        return $this->removeFilesWhere($where, $dir);
+    }
 
     function addFilesystemLink($name, $dir = null, $source = null)
     {
@@ -104,7 +142,8 @@ trait FilesystemTrait
         }
         $dir = FilesystemModel::where([
             ['model_type', '=', __CLASS__],
-            ['model_id', '=', $this->id]
+            ['model_id', '=', $this->id],
+            ['type' ,'=', FilesystemTypeEnum::DIR]
         ])->first();
         if (!$dir) throw new Exception('资源状态异常');
         return $this->addFilesystemLink($name, $dir, $source);
@@ -144,6 +183,7 @@ trait FilesystemTrait
 
         return $query->where($where)->get();
     }
+
 
 
     function listFilesystemData()
